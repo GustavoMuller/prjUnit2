@@ -155,7 +155,7 @@ public class Subject {
     public void printToTextFile(){
         if (students != null && students.size() > 0){
             try {
-                @Cleanup PrintStream fileStream = new PrintStream(this.getName()+".txt");
+                @Cleanup PrintStream fileStream = new PrintStream("Reports\\" + this.getName()+".txt");
                 fileStream.println(this);
                 System.out.println("TXT file generated successfully");
             } catch (IOException e){
@@ -172,7 +172,7 @@ public class Subject {
         if (students != null && students.size() > 0){
             try {
                 @Cleanup Document doc = new Document();
-                PdfWriter.getInstance(doc,new FileOutputStream(this.getName()+".pdf"));
+                PdfWriter.getInstance(doc,new FileOutputStream("Reports\\" + this.getName()+".pdf"));
 
                 doc.open();
                 Paragraph paragraph = new Paragraph(this.toString());
@@ -189,14 +189,15 @@ public class Subject {
     }
 
     public void sendReport(){
-        if (new File(this.getName()+".pdf").exists()) {
+        String path = "Reports\\" + this.getName()+".pdf";
+        if (new File(path).exists()) {
             if (this.getToMail() != null && !this.getToMail().isBlank()){
                 Mail mail = new Mail();
                 mail.sendMail(
                         this.getToMail()
                         ,this.getName().toUpperCase()+" grades report."
                         ,"Students list and statistics for " + this.getName().toUpperCase()
-                        ,new String[]{this.getName()+".pdf"}
+                        ,new String[]{path}
                 );
             } else {
                 System.out.println("Unable to send email. Recipient email address has not been set.");
